@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>10月力量训练打卡</title>
+<style>
+:root{
+  --bg:#f6f5f1; --card:#ffffff; --ink:#1d2327; --mute:#69737a; --line:#e3e1da;
+  --accent:#2f7d5b; --accent-ink:#ffffff; --soft:#e7f2ec; --warn:#c2410c; --warn-soft:#fdeee6;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14181a; --card:#1d2225; --ink:#e8ecee; --mute:#9aa5ab; --line:#2c3337;
+    --accent:#4fb987; --accent-ink:#0b1a13; --soft:#1b2c25; --warn:#f08a5d; --warn-soft:#2f211a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14181a; --card:#1d2225; --ink:#e8ecee; --mute:#9aa5ab; --line:#2c3337;
+  --accent:#4fb987; --accent-ink:#0b1a13; --soft:#1b2c25; --warn:#f08a5d; --warn-soft:#2f211a;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  line-height:1.5;-webkit-text-size-adjust:100%}
+main{max-width:640px;margin:0 auto;padding:18px 14px 40px}
+h1{font-size:22px;margin:4px 0 2px}
+.sub{color:var(--mute);font-size:13px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{text-align:center;padding:10px 4px;background:var(--soft);border-radius:10px}
+.stat b{display:block;font-size:22px;line-height:1.2}
+.stat span{font-size:12px;color:var(--mute)}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin:12px 0 6px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:6px}
+.next{font-size:13px;color:var(--mute)}
+.next b{color:var(--ink)}
+.cal-h,.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-h div{font-size:11px;color:var(--mute);text-align:center;padding-bottom:2px}
+.cell{aspect-ratio:1/1;border-radius:9px;border:1px solid transparent;background:transparent;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;color:var(--ink);padding:0;cursor:pointer;font-family:inherit}
+.cell.empty{visibility:hidden;cursor:default}
+.cell small{font-size:10px;color:var(--mute);line-height:1}
+.cell.sess{background:var(--card);border-color:var(--line)}
+.cell.done{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.cell.done small{color:var(--accent-ink)}
+.cell.miss{background:var(--warn-soft);border-color:var(--warn)}
+.cell.today{box-shadow:0 0 0 2px var(--ink) inset}
+.cell.sel{outline:2px solid var(--accent);outline-offset:1px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--mute);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px;border:1px solid var(--line)}
+.legend .l1::before{background:var(--accent);border-color:var(--accent)}
+.legend .l2::before{background:var(--card)}
+.legend .l3::before{background:var(--warn-soft);border-color:var(--warn)}
+.day-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.day-h h2{font-size:17px;margin:0}
+.tag{font-size:12px;background:var(--soft);color:var(--accent);padding:2px 8px;border-radius:20px}
+.intro{font-size:13px;color:var(--mute);margin:6px 0 10px}
+.item{display:flex;gap:10px;align-items:flex-start;padding:10px 6px;border-top:1px solid var(--line);cursor:pointer}
+.item input{width:22px;height:22px;margin-top:2px;accent-color:var(--accent);flex:none}
+.item .nm{font-weight:600;font-size:15px}
+.item .rx{font-size:13px;color:var(--accent)}
+.item .cue{font-size:12.5px;color:var(--mute);margin-top:2px}
+.item.on .nm{text-decoration:line-through;opacity:.55}
+textarea{width:100%;min-height:60px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);
+  padding:8px 10px;font:inherit;font-size:14px;resize:vertical;margin-top:8px}
+.btn{width:100%;margin-top:10px;padding:13px;border:0;border-radius:12px;background:var(--accent);color:var(--accent-ink);
+  font-size:16px;font-weight:700;font-family:inherit;cursor:pointer}
+.btn.undo{background:transparent;color:var(--mute);border:1px solid var(--line);font-weight:500;font-size:14px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.ok{background:var(--soft);color:var(--accent);padding:10px 12px;border-radius:10px;font-size:14px;margin-top:10px}
+.extras{margin-top:12px;border-top:1px dashed var(--line);padding-top:6px}
+.extras .item{border-top:0;padding:6px}
+.rules{font-size:12.5px;color:var(--mute)}
+.rules ul{margin:6px 0 0;padding-left:18px}
+.rules .stop{color:var(--warn)}
+.foot{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-top:6px}
+.foot button{background:none;border:0;color:var(--mute);font:inherit;font-size:11px;text-decoration:underline;cursor:pointer;padding:0}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+(function(){
+  var START='2026-10-07', END='2026-10-31', WEEK3='2026-10-19', CREATINE='2026-10-26';
+  var SESS=[['2026-10-07','A'],['2026-10-09','B'],['2026-10-12','A'],['2026-10-14','B'],['2026-10-16','A'],
+            ['2026-10-19','B'],['2026-10-21','A'],['2026-10-23','B'],['2026-10-26','A'],['2026-10-28','B'],['2026-10-30','A']];
+  var MAP={}; SESS.forEach(function(s,i){MAP[s[0]]={t:s[1],i:i}});
+  var WD=['日','一','二','三','四','五','六'];
+  function pad(n){return String(n).padStart(2,'0')}
+  function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+  function parse(ds){var p=ds.split('-').map(Number);return new Date(p[0],p[1]-1,p[2])}
+  function label(ds){var d=parse(ds);return (d.getMonth()+1)+'/'+d.getDate()+' 周'+WD[d.getDay()]}
+  var TODAY=ymd(new Date());
+  var sel = TODAY<START?START:(TODAY>END?END:TODAY);
+
+  var WARM={n:'热身 5分钟',rx:'每次训练都做',cue:'原地踏步1分钟 → 猫牛式8次 → 徒手深蹲10次 → 弹力带肩外旋10次 → 下颌回收5次。动作放慢。'};
+  var PLAN={
+    A:{title:'A日 · 腿 + 拉 + 推',items:[WARM,
+      {n:'背包高脚杯深蹲',rx:'{n}组 × 10–12次',cue:'背包抱胸前（5–8kg起步）；下蹲约4秒，底部停1–2秒；膝盖朝脚尖方向，胸口朝前。'},
+      {n:'单腿罗马尼亚硬拉（5kg）',rx:'{n}组 × 10次/侧',cue:'支撑腿微屈膝，髋向后推，背保持平直，哑铃贴腿滑下；先徒手并扶墙练习。'},
+      {n:'引体向上（入门分级）',rx:'{n}组 × 尽力而为',cue:'①悬挂10–20秒 → ②踩椅子到顶，4–5秒慢放 → ③弹力带辅助。先沉肩胛再拉，下巴过杠即可，不伸脖子。'},
+      {n:'脚垫高俯卧撑 · 慢放',rx:'{n}组 × 10–15次',cue:'脚垫30–40cm；身体成一条直线；下放3秒；视线看前方地面，不塌腰。'},
+      {n:'弹力带面拉',rx:'{n}组 × 15次',cue:'拉向耳朵两侧，手肘高于手；肩膀下沉不耸肩；末端停1秒。'}]},
+    B:{title:'B日 · 单腿 + 划船 + 握力',items:[WARM,
+      {n:'背包分腿蹲',rx:'{n}组 × 8–10次/侧',cue:'后脚垫椅子，躯干直立垂直下沉；前脚踩实，膝盖朝脚尖；做完一侧再换边。'},
+      {n:'单腿臀桥',rx:'{n}组 × 12次/侧',cue:'顶到肩-髋-膝成直线即可，顶端夹紧臀部1秒，不要用腰顶；太难先双腿做。'},
+      {n:'哑铃单臂划船（5kg）',rx:'{n}组 × 12–15次/侧',cue:'先沉肩胛再拉肘；顶端停2秒，下放3秒。重量偏轻，靠慢和停顿加强度。'},
+      {n:'弹力带肩上推举',rx:'{n}组 × 12–15次',cue:'肋骨收住不塌腰，肩膀不要耸向耳朵；若颈部两侧紧张，改做一组面拉代替。'},
+      {n:'单杠悬挂',rx:'{n}组 × 20–40秒',cue:'先主动沉肩，再放松挂着，自然呼吸。手臂麻木或颈部刺痛立即停止。'},
+      {n:'提哑铃负重行走（每手5kg）',rx:'{n}组 × 40秒',cue:'肩膀下沉、挺胸、身体直立，不要被哑铃拉得耸肩或歪斜。'}]}
+  };
+
+  var S={days:{}}, ref=null, chain=Promise.resolve(), status='本机保存', timer=null, wipeArmed=false;
+  try{var t=localStorage.getItem('lt-oct2026'); if(t) S=JSON.parse(t);}catch(e){}
+  if(!S||!S.days) S={days:{}};
+
+  function rd(ds){return S.days[ds]||{checks:[],done:false,note:'',pushups:false,creatine:false}}
+  function wr(ds){
+    if(!S.days[ds]) S.days[ds]={checks:[],done:false,note:'',pushups:false,creatine:false};
+    return S.days[ds];
+  }
+  function saveLocal(){try{localStorage.setItem('lt-oct2026',JSON.stringify(S))}catch(e){}}
+  function pushDb(){
+    if(!ref) return;
+    var snap=JSON.parse(JSON.stringify(S));
+    chain=chain.then(function(){return ref.set(snap)})
+      .then(function(){status='☁ 已云端保存';paintStatus()})
+      .catch(function(){status='本机保存（云端暂不可用）';paintStatus()});
+  }
+  function persist(){saveLocal();pushDb()}
+  function persistSoon(){saveLocal();clearTimeout(timer);timer=setTimeout(pushDb,700)}
+  function paintStatus(){var el=document.getElementById('status');if(el)el.textContent=status}
+
+  function setsFor(ds){return ds<WEEK3?2:3}
+  function weekNo(ds){return ds<'2026-10-12'?1:ds<'2026-10-19'?2:ds<'2026-10-26'?3:4}
+
+  function stats(){
+    var done=0,elig=0;
+    SESS.forEach(function(s){var d=rd(s[0]).done; if(d)done++; if(s[0]<TODAY||d)elig++;});
+    var streak=0, list=SESS.filter(function(s){return s[0]<=TODAY});
+    for(var i=list.length-1;i>=0;i--){
+      var dn=rd(list[i][0]).done;
+      if(dn){streak++}
+      else if(list[i][0]===TODAY){continue}
+      else break;
+    }
+    var next=null;
+    for(var j=0;j<SESS.length;j++){
+      var d2=SESS[j][0];
+      if((d2>TODAY||d2===TODAY)&&!rd(d2).done){next=SESS[j];break;}
+    }
+    return {done:done,elig:elig,rate:elig?Math.round(done/elig*100):0,streak:streak,next:next};
+  }
+
+  function render(){
+    var y=window.scrollY;
+    var st=stats();
+    var h='';
+    h+='<h1>10月力量训练打卡</h1>';
+    h+='<div class="sub">10/7 – 10/31 · 每周一、三、五 · A / B 交替 · 共11次</div>';
+
+    h+='<div class="card"><div class="stats">'
+      +'<div class="stat"><b>'+st.done+'<span> / '+SESS.length+'</span></b><span>累计完成</span></div>'
+      +'<div class="stat"><b>'+st.rate+'%</b><span>已到期完成率</span></div>'
+      +'<div class="stat"><b>'+st.streak+'</b><span>连续完成</span></div></div>'
+      +'<div class="bar"><i style="width:'+Math.round(st.done/SESS.length*100)+'%"></i></div>'
+      +'<div class="next">'+(st.next?('下一次：<b>'+label(st.next[0])+' · '+st.next[1]+'日</b>'):'本月11次全部结束 🎉')+'</div></div>';
+
+    h+='<div class="card"><div class="cal-h">'+['一','二','三','四','五','六','日'].map(function(w){return '<div>'+w+'</div>'}).join('')+'</div><div class="cal">';
+    var off=(new Date(2026,9,1).getDay()+6)%7;
+    for(var e=0;e<off;e++)h+='<button class="cell empty" tabindex="-1"></button>';
+    for(var d=1;d<=31;d++){
+      var ds='2026-10-'+pad(d), m=MAP[ds], r=rd(ds), cls='cell', sm='';
+      if(m){cls+=' sess'; sm=m.t;
+        if(r.done){cls+=' done';sm='✓'}
+        else if(ds<TODAY){cls+=' miss'}
+      }
+      if(ds===TODAY)cls+=' today';
+      if(ds===sel)cls+=' sel';
+      h+='<button class="'+cls+'" data-d="'+ds+'">'+d+(sm?'<small>'+sm+'</small>':'')+'</button>';
+    }
+    h+='</div><div class="legend"><span class="l1">已打卡</span><span class="l2">计划训练日（A/B）</span><span class="l3">已错过</span></div></div>';
+
+    var m2=MAP[sel], r2=rd(sel), future=sel>TODAY, n=setsFor(sel);
+    h+='<div class="card"><div class="day-h"><h2>'+label(sel)+(sel===TODAY?' · 今天':'')+'</h2>'
+      +'<span class="tag">第'+weekNo(sel)+'周 · 每动作'+n+'组</span></div>';
+    if(m2){
+      var plan=PLAN[m2.t];
+      var cnt=plan.items.filter(function(_,i){return r2.checks[i]}).length;
+      h+='<div class="intro"><b>'+plan.title+'</b>（第'+(m2.i+1)+'/'+SESS.length+'次）· 做完每组留 '+(sel<WEEK3?'3个以上':'1–3个')+' 余力 · 已完成 '+cnt+'/'+plan.items.length+' 项</div>';
+      plan.items.forEach(function(it,i){
+        var on=!!r2.checks[i];
+        h+='<label class="item'+(on?' on':'')+'"><input type="checkbox" data-i="'+i+'"'+(on?' checked':'')+(future?' disabled':'')+'>'
+          +'<div><div class="nm">'+it.n+'</div><div class="rx">'+it.rx.replace('{n}',n)+'</div><div class="cue">'+it.cue+'</div></div></label>';
+      });
+      h+='<textarea id="note" placeholder="记录：哪里酸、动作难点、颈部感觉、引体做到哪个阶段…">'+'</textarea>';
+      if(r2.done){
+        h+='<div class="ok">✅ 已打卡。本月累计第 '+st.done+' 次。</div><button class="btn undo" data-act="done">撤销打卡</button>';
+      } else {
+        h+='<button class="btn" data-act="done"'+(future?' disabled':'')+'>'+(future?'还没到这一天':'完成打卡')+'</button>';
+      }
+    } else {
+      h+='<div class="intro">休息日。肌肉在休息日生长，不用补练。</div>';
+    }
+
+    var ex='';
+    if(!m2) ex+='<label class="item'+(r2.pushups?' on':'')+'"><input type="checkbox" data-x="pushups"'+(r2.pushups?' checked':'')+(future?' disabled':'')+'><div><div class="nm">轻量俯卧撑 1–2组（选做）</div><div class="cue">休息日只保留少量，避免推的量远超拉的量。</div></div></label>';
+    if(sel>=CREATINE) ex+='<label class="item'+(r2.creatine?' on':'')+'"><input type="checkbox" data-x="creatine"'+(r2.creatine?' checked':'')+(future?' disabled':'')+'><div><div class="nm">一水肌酸 3–5g</div><div class="cue">每天一次，混入燕麦、酸奶或咖啡均可，不需要负荷期。</div></div></label>';
+    if(ex) h+='<div class="extras">'+ex+'</div>';
+    h+='</div>';
+
+    h+='<div class="card rules"><b>执行规则</b><ul>'
+      +'<li>组间休息：腿部90–120秒，上肢60–90秒；用力时呼气，不憋气。</li>'
+      +'<li>节奏：下放3–4秒，发力1–2秒；动作质量优先于重量和次数。</li>'
+      +'<li>第1–2周每动作2组、留3个以上余力；第3–4周加到3组、逼近“剩1–3个”。</li>'
+      +'<li>10/26（第4周）起开始每日肌酸。</li>'
+      +'<li class="stop">立即停止并就医的信号：手臂/手指麻木刺痛、头晕或视物模糊、颈部剧烈或放射性疼痛、关节尖锐刺痛、不明原因的剧烈肌肉疼痛无力或尿色发深。</li></ul></div>';
+
+    h+='<div class="foot"><span id="status">'+status+'</span><button id="wipe">'+(wipeArmed?'再点一次确认清空':'清空全部记录')+'</button></div>';
+
+    var app=document.getElementById('app');
+    app.innerHTML=h;
+    var ta=document.getElementById('note');
+    if(ta){ta.value=r2.note||'';ta.disabled=future;
+      ta.addEventListener('input',function(){wr(sel).note=ta.value;persistSoon()});}
+    app.querySelectorAll('.cell[data-d]').forEach(function(b){
+      b.addEventListener('click',function(){sel=b.getAttribute('data-d');wipeArmed=false;render()});
+    });
+    app.querySelectorAll('input[data-i]').forEach(function(el){
+      el.addEventListener('change',function(){wr(sel).checks[+el.getAttribute('data-i')]=el.checked;persist();render()});
+    });
+    app.querySelectorAll('input[data-x]').forEach(function(el){
+      el.addEventListener('change',function(){wr(sel)[el.getAttribute('data-x')]=el.checked;persist();render()});
+    });
+    var db=app.querySelector('[data-act="done"]');
+    if(db) db.addEventListener('click',function(){
+      var r=wr(sel); r.done=!r.done; r.at=r.done?Date.now():null; persist(); render();
+    });
+    document.getElementById('wipe').addEventListener('click',function(){
+      if(!wipeArmed){wipeArmed=true;render();setTimeout(function(){if(wipeArmed){wipeArmed=false;render()}},4000);return;}
+      wipeArmed=false;S={days:{}};persist();render();
+    });
+    window.scrollTo(0,y);
+  }
+
+  render();
+
+  (async function(){
+    try{
+      if(!window.claude||!window.claude.use) return;
+      var db=await window.claude.use('db'), user=await window.claude.use('user');
+      if(!db||!user) return;
+      var uid=await user.id(); if(!uid) return;
+      ref=db.collection('data/users/'+uid).doc('training');
+      var snap=await ref.get();
+      if(snap.exists){
+        var d=snap.data();
+        if(d&&d.days){S={days:d.days};saveLocal();}
+      } else if(Object.keys(S.days).length){
+        await ref.set(JSON.parse(JSON.stringify(S)));
+      }
+      status='☁ 已云端保存';
+      render();
+    }catch(e){ref=null;status='本机保存'}
+  })();
+})();
+</script>
+</body>
+</html>
